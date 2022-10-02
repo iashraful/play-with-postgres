@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:14-bullseye
+    restart: always
+    env_file:
+      - ./.env
+    expose:
+      - 5432
+    ports:
+      - "5440:5432"
+    volumes:
+      - ./scripts/1-init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./postgres_data:/var/lib/postgresql/data/
+
+  app:
+    build: ./
+    restart: always
+    command: sh -c "uvicorn api.main:app --host=0.0.0.0 --reload"
+    working_dir: /app
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/app:cached
+    expose:
+      - 8000
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db

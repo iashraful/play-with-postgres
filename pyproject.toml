@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "play-with-postgres"
+version = "0.0.1"
+description = "This is all about postgres and it's feature. Basically you'll find some interesting stuff about postgres."
+authors = ["Ashraful Islam <ashrafulrobin3@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "play_with_postgres"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.28.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
