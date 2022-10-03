@@ -21,6 +21,7 @@ def has_qoute(value: Any):
 
 
 def generate_insert_query(data: dict, table_name: str) -> str:
+    print(f"Preparing the insert query for {table_name}")
     columns = ",".join([f" {k}" for k in data.keys()])
     values = ",".join([f"'{has_qoute(k)}'" for k in data.values()])
     stmt = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
@@ -32,12 +33,14 @@ class RandomUser:
     api_base_url = "https://randomuser.me/api/"
 
     def call_api(self, results: int = 100) -> List[dict]:
+        print(f"Calling API for {results} users")
         _url = f"{self.api_base_url}?results={results}"
         response = requests.get(_url)
         if response.status_code == 200:
             return response.json()["results"]
 
     def prepare_user_data(self, data: List[dict]) -> Tuple[List[dict], List[dict]]:
+        print("Preparing data for SQL database.")
         user_table_data: List[dict] = list()
         user_table_meta_data: List[dict] = list()
         for each in data:
@@ -72,25 +75,31 @@ class RandomUser:
         return user_table_data, user_table_meta_data
 
     def handler(self):
-        results: List[dict] = self.call_api(results=2)
+        results: List[dict] = self.call_api(results=1000)
         user_table_data, meta_table_data = self.prepare_user_data(data=results)
         # Connect to database
+        print("Connecting to db")
         connection = connect_to_db()
         try:
+            cursor = connection.cursor()
             for data in user_table_data:
-                sql = generate_insert_query(data=data, table_name="users")
-                cursor = connection.cursor()
-                cursor.execute(sql)
-                cursor.commit()
+                try:
+                    sql = generate_insert_query(data=data, table_name="users")
+                    cursor.execute(sql)
+                except:
+                    continue
             for data in meta_table_data:
-                sql = generate_insert_query(data=data, table_name="user_meta")
-                cursor = connection.cursor()
-                cursor.execute(sql)
-                cursor.commit()
+                try:
+                    sql = generate_insert_query(data=data, table_name="user_meta")
+                    cursor.execute(sql)
+                except:
+                    continue
+            connection.commit()
         except Exception as err:
             print(err)
         finally:
             close_db_connection(connection=connection)
+            print("Disconnected from db.")
 
 
 if __name__ == "__main__":
