@@ -1,22 +1,22 @@
 [tool.poetry]
-name = "play-with-postgres"
-version = "0.0.1"
-description = "This is all about postgres and it's feature. Basically you'll find some interesting stuff about postgres."
 authors = ["Ashraful Islam <ashrafulrobin3@gmail.com>"]
+description = "This is all about postgres and it's feature. Basically you'll find some interesting stuff about postgres."
 license = "MIT"
+name = "play-with-postgres"
 readme = "README.md"
-packages = [{include = "play_with_postgres"}]
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-requests = "^2.28.1"
-python-dotenv = "^0.21.0"
+fastapi = "^0.95.2"
 psycopg2-binary = "^2.9.3"
-
+python = "^3.10"
+python-dotenv = "^0.21.0"
+requests = "^2.28.1"
+uvicorn = "^0.22.0"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^22.8.0", allow-prereleases = true}
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

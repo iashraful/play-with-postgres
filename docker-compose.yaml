@@ -12,12 +12,13 @@ services:
       - "5440:5432"
     volumes:
       - ./sqls/1-init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./sqls/user_tables.sql:/docker-entrypoint-initdb.d/user_tables.sql
       - ./postgres_data:/var/lib/postgresql/data/
 
   app:
     build: ./
     restart: always
-    command: sh -c "uvicorn api.main:app --host=0.0.0.0 --reload"
+    command: sh -c "uvicorn main:app --host=0.0.0.0 --port 8000 --reload"
     working_dir: /app
     env_file:
       - ./.env
